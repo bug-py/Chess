@@ -306,7 +306,48 @@ size_t position(piece_t game[8][8],vector_t* actual,vector_t array[8*8]){
             bishop(game,actual,array,&size,piece);
             rook(game,actual,array,&size,piece);
             break;
-        
+        case KING :
+            add(actual,&vector,-1,-1);
+            current=GetPiece(game,&vector);
+            if(current && (current->type==EMPTY || current->color!=piece->color)){
+                    push(&vector,array,&size);
+            }
+            add(actual,&vector,0,-1);
+            current=GetPiece(game,&vector);
+            if(current && (current->type==EMPTY || current->color!=piece->color)){
+                    push(&vector,array,&size);
+            }
+            add(actual,&vector,1,-1);
+            current=GetPiece(game,&vector);
+            if(current && (current->type==EMPTY || current->color!=piece->color)){
+                    push(&vector,array,&size);
+            }
+            add(actual,&vector,1,0);
+            current=GetPiece(game,&vector);
+            if(current && (current->type==EMPTY || current->color!=piece->color)){
+                    push(&vector,array,&size);
+            }
+            add(actual,&vector,1,1);
+            current=GetPiece(game,&vector);
+            if(current && (current->type==EMPTY || current->color!=piece->color)){
+                    push(&vector,array,&size);
+            }
+            add(actual,&vector,0,1);
+            current=GetPiece(game,&vector);
+            if(current && (current->type==EMPTY || current->color!=piece->color)){
+                    push(&vector,array,&size);
+            }
+            add(actual,&vector,-1,1);
+            current=GetPiece(game,&vector);
+            if(current && (current->type==EMPTY || current->color!=piece->color)){
+                    push(&vector,array,&size);
+            }
+            add(actual,&vector,-1,0);
+            current=GetPiece(game,&vector);
+            if(current && (current->type==EMPTY || current->color!=piece->color)){
+                    push(&vector,array,&size);
+            }
+
     }
     return size;
 }
@@ -314,7 +355,7 @@ int main(){
     piece_t game[8][8]={{{BLACK,ROOK,false},{BLACK,KNIGHT,false},{BLACK,BISHOP,false},{BLACK,QUEEN,false},{BLACK,KING,false},{BLACK,BISHOP,false},{BLACK,KNIGHT,false},{BLACK,ROOK,false}},
                         {{BLACK,PAWN,false},{BLACK,PAWN,false},{BLACK,PAWN,false},{BLACK,PAWN,false},{BLACK,PAWN,false},{BLACK,PAWN,false},{BLACK,PAWN,false},{BLACK,PAWN,false}},
                         {{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false}},
-                        {{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{WHITE,QUEEN,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false}},
+                        {{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{WHITE,KING,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false}},
                         {{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false}},
                         {{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false}},
                         {{WHITE,PAWN,false},{WHITE,PAWN,false},{WHITE,PAWN,false},{WHITE,PAWN,false},{WHITE,PAWN,false},{WHITE,PAWN,false},{WHITE,PAWN,false},{WHITE,PAWN,false}},
