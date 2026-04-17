@@ -47,11 +47,85 @@ piece_t* GetPiece(piece_t game[8][8],vector_t* position){
     }
     return &(game[position->y][position->x]);
 }
+
+
+
 void push(vector_t* current,vector_t* array,size_t* size){
         array[*size]=*current;
         *size+=1;
 }
-
+void bishop(piece_t game[8][8],vector_t* actual,vector_t array[8*8],size_t* size,piece_t* piece){
+    vector_t vector;
+    piece_t* current;
+    vector=*actual;
+    while(true){
+        add(&vector,NULL,1,1);
+        current=GetPiece(game,&(vector));
+        if(current){
+            if(current->type==EMPTY){
+                push(&vector,array,size);
+            }else{
+                if(piece->color!=current->color){
+                    push(&vector,array,size);
+                }
+                break;
+            }
+        }else{
+            break;
+        } 
+    }
+    vector=*actual;
+    while(true){
+        add(&vector,NULL,-1,1);
+        current=GetPiece(game,&(vector));
+        if(current){
+            if(current->type==EMPTY){
+                push(&vector,array,size);
+            }else{
+                if(piece->color!=current->color){
+                    push(&vector,array,size);
+                }
+                break;
+            }
+        }else{
+            break;
+        } 
+    }
+    vector=*actual;
+    while(true){
+        add(&vector,NULL,1,-1);
+        current=GetPiece(game,&(vector));
+        if(current){
+            if(current->type==EMPTY){
+                push(&vector,array,size);
+            }else{
+                if(piece->color!=current->color){
+                    push(&vector,array,size);
+                }
+                break;
+            }
+            }else{
+                break;
+            } 
+    }
+    vector=*actual;
+    while(true){
+        add(&vector,NULL,-1,-1);
+        current=GetPiece(game,&(vector));
+        if(current){
+            if(current->type==EMPTY){
+                 push(&vector,array,size);
+            }else{
+                if(piece->color!=current->color){
+                    push(&vector,array,size);
+                }
+                break;
+            }
+        }else{
+            break;
+        } 
+    }
+}
 size_t position(piece_t game[8][8],vector_t* actual,vector_t array[8*8]){
     piece_t* piece=GetPiece(game,actual);
     if(piece==NULL) return 0;
@@ -150,7 +224,9 @@ size_t position(piece_t game[8][8],vector_t* actual,vector_t array[8*8]){
                     push(&vector,array,&size);
              }
              break;
-        
+        case BISHOP:
+            bishop(game,actual,array,&size,piece);
+            break;
     }
     return size;
 }
@@ -158,7 +234,7 @@ int main(){
     piece_t game[8][8]={{{BLACK,ROOK,false},{BLACK,KNIGHT,false},{BLACK,BISHOP,false},{BLACK,QUEEN,false},{BLACK,KING,false},{BLACK,BISHOP,false},{BLACK,KNIGHT,false},{BLACK,ROOK,false}},
                         {{BLACK,PAWN,false},{BLACK,PAWN,false},{BLACK,PAWN,false},{BLACK,PAWN,false},{BLACK,PAWN,false},{BLACK,PAWN,false},{BLACK,PAWN,false},{BLACK,PAWN,false}},
                         {{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false}},
-                        {{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,BISHOP,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false}},
+                        {{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{WHITE,BISHOP,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false}},
                         {{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false}},
                         {{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false},{NOT_COLOR,EMPTY,false}},
                         {{WHITE,PAWN,false},{WHITE,PAWN,false},{WHITE,PAWN,false},{WHITE,PAWN,false},{WHITE,PAWN,false},{WHITE,PAWN,false},{WHITE,PAWN,false},{WHITE,PAWN,false}},
