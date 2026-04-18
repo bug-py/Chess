@@ -1,5 +1,13 @@
 #include <stdio.h>
 #include "logique/board.h"
+#include "structdata/dynamic_array.h"
+void PrintArray(array_t* array){
+    int* list=array_get(array);
+    for(size_t i=0;i<array_lenght(array);i++){
+        printf("|%i|",list[i]);
+    }
+    putchar('\n');
+}
 
 int main(){
     chessboard_t board;
@@ -19,5 +27,21 @@ int main(){
         return -1;
     }
     printf("%i %i %i\n",piece->color,piece->type,piece->has_moved);
+    array_t array;
+    int number;
+    array_init(&array,sizeof(int),1);
+    number=-100;
+    array_push(&array,&number);
+    number=-200;
+    array_push(&array,&number);
+    number=67;
+    array_push(&array,&number);
+    number=1999;
+    array_push(&array,&number);
+    PrintArray(&array);
+    array_pop(&array,0);
+    PrintArray(&array);
+    printf("%i\n",*(int*)array_at(&array,1));
+    array_destroy(&array);
     return 0;
 }
