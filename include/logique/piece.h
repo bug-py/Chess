@@ -20,6 +20,6 @@ typedef enum{
 typedef struct{
     piece_color_t color;
     piece_type_t type;
-    bool playing;
+    bool has_moved;
 }piece_t;
 #endif
