@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 typedef enum{
+    NO_COLOR,
     WHITE,
     BLACK
 }piece_color_t;
