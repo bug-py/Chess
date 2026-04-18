@@ -23,4 +23,6 @@ typedef struct{
     piece_type_t type;
     bool has_moved;
 }piece_t;
+void init_piece(piece_t* piece,piece_color_t color,piece_type_t type,bool has_moved);
+void clear_piece(piece_t* piece);
 #endif
