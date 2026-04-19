@@ -8,8 +8,8 @@ typedef struct{
     void* body;
 }array_t;
 void array_init(array_t* array,size_t element_size,size_t init_capacity);
-void array_push(array_t* array,void* element);
-void array_pop(array_t* array,size_t index);
+void array_append(array_t* array,void* element);
+void array_remove(array_t* array,size_t index);
 void* array_at(array_t* array,size_t index);
 void* array_get(array_t* array);
 size_t array_lenght(array_t* array);

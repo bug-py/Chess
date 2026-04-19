@@ -3,9 +3,9 @@
 #include <stdbool.h>
 
 typedef enum{
-    NO_COLOR,
-    WHITE,
-    BLACK
+    NO_COLOR=0,
+    BLACK=1,
+    WHITE=2
 }piece_color_t;
 
 typedef enum{
@@ -25,4 +25,5 @@ typedef struct{
 }piece_t;
 void init_piece(piece_t* piece,piece_color_t color,piece_type_t type,bool has_moved);
 void clear_piece(piece_t* piece);
+bool is_empty(piece_t* piece);
 #endif

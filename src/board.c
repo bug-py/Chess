@@ -1,8 +1,6 @@
 #include "logique/board.h"
 #include "stddef.h"
 
-
-
 void init_board(chessboard_t board){
     piece_type_t mapping[8]={
         ROOK,KNIGHT,BISHOP,QUEEN,KING,BISHOP,KNIGHT,ROOK
@@ -42,3 +40,4 @@ piece_t* move_piece(chessboard_t board,vector_t* old,vector_t* new){
     end->has_moved=true;
     return begin;
 }
+

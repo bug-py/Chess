@@ -14,7 +14,7 @@ void array_init(array_t* array,size_t element_size,size_t init_capacity){
     array->length=0;
     array->body=safe_alloc(element_size,init_capacity,NULL);
 }
-void array_push(array_t* array,void* element){
+void array_append(array_t* array,void* element){
     if(array->length>=array->capacity){
         array->capacity=array->length*2;
         array->body=safe_alloc(array->element_size,array->capacity,array->body);
@@ -22,7 +22,7 @@ void array_push(array_t* array,void* element){
     memcpy(get_ptr_index(array->body,array->element_size,array->length),element,array->element_size);
     array->length++;
 }
-void array_pop(array_t* array,size_t index){
+void array_remove(array_t* array,size_t index){
     if(index>=array->length){
         return;
     }
