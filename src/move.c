@@ -1,15 +1,9 @@
 #include "logique/move.h"
 #include "structdata/alloc.h"
-
-const vector_t pawn[2][2][2]={
-    {
-    {{0,-1},{0,-2}},
-    {{1,-1},{-1,-1}}
-    },
-    { 
-    {{0,1},{0,2}},
-    {{1,1},{-1,1}}
-    }
+#include <stdio.h>
+const vector_t pawn[2][4]={
+    {{0,-1},{0,-2},{1,-1},{-1,-1}},
+    { {0,1},{0,2},{1,1},{-1,1}}
 };
 const vector_t knight[8]={
     {1,2},{-1,2},{1,-2},{-1,-2},{2,1},{2,-1},{-2,1},{-2,-1}
@@ -71,19 +65,23 @@ void pawn_movement(chessboard_t board,vector_t* position,piece_t* piece,array_t*
     int i= (piece->color==WHITE) ? 0 : 1;
     vector_t to;
     piece_t* other;
-    vector_add(position,pawn[i][0]+0,&to);
+    vector_add(position,pawn[i]+0,&to);
     other=get_piece(board,&to);
 
     if(other && is_empty(other)){
 
         array_append(result,&to);
         if(!piece->has_moved){
-            vector_add(position,pawn[i][0]+1,&to);
+            vector_add(position,pawn[i]+1,&to);
             other=get_piece(board,&to);
             if(other && is_empty(other)) array_append(result,&to);
         }
     }
-    step_movement(board,position,piece,result,pawn[i][1]+0,2);
+    for(int move=2;move<4;move++){
+        vector_add(position,pawn[i]+move,&to);
+        other=get_piece(board,&to);
+        if(other && !is_empty(other) && other->color!=piece->color) array_append(result,&to);
+    }
      
 }
 
@@ -99,19 +97,19 @@ array_t* generation_coup(chessboard_t board,vector_t* position){
             pawn_movement(board,position,piece,array);
             break;
         case KNIGHT:
-            step_movement(board,position,piece,array,knight,sizeof(knight));
+            step_movement(board,position,piece,array,knight,sizeof(knight)/sizeof(vector_t));
             break;
         case ROOK:
-            ray_movement(board,position,piece,array,rook,sizeof(rook));
+            ray_movement(board,position,piece,array,rook,sizeof(rook)/sizeof(vector_t));
             break;
         case BISHOP:
-            ray_movement(board,position,piece,array,bishop,sizeof(bishop));
+            ray_movement(board,position,piece,array,bishop,sizeof(bishop)/sizeof(vector_t));
             break;
         case QUEEN:
-            ray_movement(board,position,piece,array,queen,sizeof(queen));
+            ray_movement(board,position,piece,array,queen,sizeof(queen)/sizeof(vector_t));
             break;
         case KING :
-            step_movement(board,position,piece,array,king,sizeof(king));
+            step_movement(board,position,piece,array,king,sizeof(king)/sizeof(vector_t));
             break;        
     }
     return array;
