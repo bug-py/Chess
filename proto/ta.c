@@ -6,8 +6,30 @@ typedef struct{
     size_t 
 }movement_context_t;
 void static_movement(chessboard_t board,piece_t* piece,vector_t* position,array_t* array,vector_t* movement,size_t size)
+typedef enum{
+    NORMAL_MOVE,
+    ELIMATED_MOVE,
+    PROMOTION_MOVE,
+    PASSANT_MOVE,
+    ROQUE_MOVE
+}movement_type_t;
 
-
+typedef struct{
+    piece_t piece;
+    vector_t from;
+    vector_t to;
+    piece_t eliminated_piece;
+    
+    movement_type_t type;
+    movement_state_t state;
+    enum {
+        vector_t pawn_passant_position;
+        piece_t promotion;
+    }special;
+}movement_t;
+bool case_attack(chessboard_t* board,vector_t* position,piece_color_t color){
+        
+}
 
 void pawn(chessboard_t board,piece_t* piece,vector_t* position,array_t* array){
     if(piece->type!=PAWN) return;
@@ -51,22 +73,6 @@ void kinght(chessboard_t board,piece_t* piece,vector_t* position,array_t* array)
                 break
              default :
                 array_push(array,&to)
-        }
-    }
-}
-void bishop(chessboard_t board,piece_t* piece,vector_t* position,array_t* array){
-    if(piece->type!=KNIGHT && piece->type!=QUEEN) return;
-    vector_t movement[4]={
-        {1,1},{-1,1},{1,-1},{-1,-1}
-    };
-    vector_t to;
-    for(int i=0;i<sizeof(movement);i++){
-        to=*position
-        while(true){
-            vector_add(&to,&(movement[i]),&to);
-            switch(check_case(board,&to)){
-
-            }
         }
     }
 }

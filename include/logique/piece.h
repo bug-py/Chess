@@ -1,11 +1,12 @@
 #ifndef _PIECE_H
 #define _PIECE_H
 #include <stdbool.h>
-
+#include <stdint.h>
+#define NULL_PIECE 0
 typedef enum{
-    NO_COLOR=0,
-    BLACK=1,
-    WHITE=2
+    NO_COLOR,
+    WHITE,
+    BLACK
 }piece_color_t;
 
 typedef enum{
@@ -18,12 +19,9 @@ typedef enum{
     KING,
 }piece_type_t;
 
-typedef struct{
-    piece_color_t color;
-    piece_type_t type;
-    bool has_moved;
-}piece_t;
-void init_piece(piece_t* piece,piece_color_t color,piece_type_t type,bool has_moved);
-void clear_piece(piece_t* piece);
-bool is_empty(piece_t* piece);
+typedef uint8_t piece_t;
+piece_t init_piece(piece_type_t type,piece_color_t color);
+piece_type_t get_type(piece_t piece);
+piece_color_t get_color(piece_t piece);
+bool is_empty(const piece_t piece);
 #endif
