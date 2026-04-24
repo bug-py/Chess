@@ -19,7 +19,9 @@ void array_append(array_t* array,void* element){
         array->capacity=array->length*2;
         array->body=safe_alloc(array->element_size,array->capacity,array->body);
     }
+    if(element){
     memcpy(get_ptr_index(array->body,array->element_size,array->length),element,array->element_size);
+    }
     array->length++;
 }
 void array_remove(array_t* array,size_t index){
