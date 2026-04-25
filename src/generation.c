@@ -1,5 +1,6 @@
 #include "logique/generation.h"
 #include "structdata/alloc.h"
+#include <stdio.h>
 const vector_t pawn[2][4]={
     {{0,-1},{0,-2},{1,-1},{-1,-1}},
     { {0,1},{0,2},{1,1},{-1,1}}
@@ -57,7 +58,7 @@ void ray_movement(chessboard_t board,vector_t* position,piece_t piece,array_t* a
     }
 }
 void special_pawn(chessboard_t board,vector_t* position,piece_t piece,array_t* array){
-    int color=(get_color(piece)==BLACK) ? 0 : 1;
+    int color=(get_color(piece)==WHITE) ? 0 : 1;
     piece_t* other;
     vector_t to;
     vector_add(position,&(pawn[color][0]),&to);
@@ -65,7 +66,7 @@ void special_pawn(chessboard_t board,vector_t* position,piece_t piece,array_t* a
     if(other && is_empty(*other)){
         array_append(array,NULL);
         init_move( array_at(array,array->length-1), position,&to, piece,NULL_PIECE, NORMAL_MOVEMENT );
-        if(position->y== (color ? 6 : 1)){
+        if(position->y== (color ? 1 : 6)){
             vector_add(position,&(pawn[color][1]),&to);
             other=get_piece(board,&to);
             if(other && is_empty(*other)){
