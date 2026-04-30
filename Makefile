@@ -7,7 +7,7 @@ FLAG=-Werror -Wextra  -I $(HEADER)
 
 all : $(BIN)chess.exe
 	
-$(BIN)chess.exe:  $(OBJ)main.o $(OBJ)vector.o $(OBJ)board.o $(OBJ)piece.o $(OBJ)dynamic_array.o $(OBJ)alloc.o $(OBJ)generation.o $(OBJ)move.o
+$(BIN)chess.exe:  $(OBJ)main.o $(OBJ)vector.o $(OBJ)board.o $(OBJ)piece.o $(OBJ)dynamic_array.o $(OBJ)alloc.o $(OBJ)generation.o $(OBJ)move.o $(OBJ)direction.o $(OBJ)attack.o
 	gcc $(FLAG) $^ -o $(BIN)chess.exe
 $(OBJ)main.o: $(SRC)main.c
 	gcc $(FLAG) -c  $< -o $@
@@ -20,6 +20,10 @@ $(OBJ)move.o : $(SRC)move.c $(HEADER)logique/move.h
 $(OBJ)piece.o : $(SRC)piece.c $(HEADER)logique/piece.h 
 	gcc $(FLAG) -c  $< -o $@
 $(OBJ)generation.o : $(SRC)generation.c $(HEADER)logique/generation.h 
+	gcc $(FLAG) -c  $< -o $@
+$(OBJ)direction.o : $(SRC)direction.c $(HEADER)logique/direction.h 
+	gcc $(FLAG) -c  $< -o $@
+$(OBJ)attack.o : $(SRC)attack.c $(HEADER)logique/attack.h 
 	gcc $(FLAG) -c  $< -o $@
 $(OBJ)dynamic_array.o : $(SRC)dynamic_array.c $(HEADER)structdata/dynamic_array.h 
 	gcc $(FLAG) -c  $< -o $@

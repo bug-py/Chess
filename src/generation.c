@@ -1,25 +1,7 @@
 #include "logique/generation.h"
 #include "structdata/alloc.h"
-#include <stdio.h>
-const vector_t pawn[2][4]={
-    {{0,-1},{0,-2},{1,-1},{-1,-1}},
-    { {0,1},{0,2},{1,1},{-1,1}}
-};
-const vector_t knight[8]={
-    {1,2},{-1,2},{1,-2},{-1,-2},{2,1},{2,-1},{-2,1},{-2,-1}
-};
-const vector_t bishop[4]={
-    {1,1},{-1,1},{1,-1},{-1,-1}
-};
-const vector_t rook[4]={
-    {1,0},{-1,0},{0,1},{0,-1}
-};
-const vector_t queen[8]={
-    {1,1},{-1,1},{1,-1},{-1,-1},{1,0},{-1,0},{0,1},{0,-1}
-};
-const vector_t king[8]={
-    {1,1},{-1,1},{1,-1},{-1,-1},{1,0},{-1,0},{0,1},{0,-1}
-};
+#include "logique/direction.h"
+
 void step_movement(chessboard_t board,vector_t* position,piece_t piece,array_t* array,const vector_t* vector,size_t length){
     vector_t to;
     for(size_t i=0;i<length;i++){
@@ -97,11 +79,11 @@ array_t* generation(chessboard_t board,vector_t* position){
     switch(get_type(*piece)){
         case EMPTY :  break;
         case PAWN :   special_pawn(board,position,*piece,array); break;
-        case KNIGHT : step_movement(board,position,*piece,array,knight,sizeof(knight)/sizeof(vector_t)); break;
-        case BISHOP : ray_movement(board,position,*piece,array,bishop,sizeof(bishop)/sizeof(vector_t)); break;
-        case ROOK :   ray_movement(board,position,*piece,array,rook,sizeof(rook)/sizeof(vector_t)); break;
-        case QUEEN :  ray_movement(board,position,*piece,array,queen,sizeof(queen)/sizeof(vector_t)); break;
-        case KING :   step_movement(board,position,*piece,array,king,sizeof(king)/sizeof(vector_t)); break;
+        case KNIGHT : step_movement(board,position,*piece,array,knight,SIZE_KNIGHT); break;
+        case BISHOP : ray_movement(board,position,*piece,array,bishop,SIZE_BISHOP); break;
+        case ROOK :   ray_movement(board,position,*piece,array,rook,SIZE_ROOK); break;
+        case QUEEN :  ray_movement(board,position,*piece,array,queen,SIZE_QUEEN); break;
+        case KING :   step_movement(board,position,*piece,array,king,SIZE_KING); break;
     }
     return array;
 }
