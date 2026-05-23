@@ -3,6 +3,7 @@
 #include "logique/board.h"
 #include "logique/move.h"
 #include "logique/generation.h"
+#include "logique/attack.h"
 #include "logique/piece.h"
 #include "structdata/dynamic_array.h"
 void PrintPiece(char* name,piece_t piece){
@@ -44,11 +45,13 @@ int main(){
    vector_t position={.x=4,.y=3};
    piece_t* piece=get_piece(board,&position);
    *piece=init_piece(QUEEN,WHITE);
-   array_t* array=generation(board,&position);
+   array_t* array=brut_generation(board,&position);
    printf("SIZE : %lu\n\n",array->length);
    for(size_t i=0;i<array->length;i++){
       PrintMove(array_at(array,i));
       putchar('\n');
    }
+   vector_set(&position,1,0);
+   printf("attack : %i ",is_attack(board,&position,WHITE));
    return 0;
 }

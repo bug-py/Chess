@@ -4,7 +4,7 @@
 bool check_ray_movement(chessboard_t board,vector_t* position,piece_t enemy,const vector_t* vector,size_t size){ 
     for(size_t i=0;i<size;i++){
         vector_t to=*position;
-        while(1){
+        while(true){
             vector_add(&to,&(vector[i]),&to);
             piece_t* piece=get_piece(board,&to);
             if(!piece) break;
@@ -25,7 +25,7 @@ bool check_step_movement(chessboard_t board,vector_t* position,piece_t enemy,con
     return false;
 }
 bool check_PAWN(chessboard_t board,vector_t* position,piece_color_t color_enemy){
-    int color=(color_enemy==WHITE)? 0 : 1;
+    int color=(color_enemy==WHITE)? 1 : 0;
     piece_t enemy=init_piece(PAWN,color_enemy);
     vector_t to;
     for(int i=2;i<4;i++){
@@ -54,11 +54,15 @@ int is_attack(chessboard_t board,vector_t* position,piece_color_t color_enemy){
 
 int search_king(chessboard_t board,piece_color_t color,vector_t* position){
     piece_t target=init_piece(KING,color);
+    vector_t element;
     for(int y=0;y<8;y++){
         for(int x=0;x<8;x++){
-            vector_set(position,x,y);
-            piece_t* piece=get_piece(board,position);
-            if(piece && (*piece)==target) return 0;
+            vector_set(&element,x,y);
+            piece_t* piece=get_piece(board,&element);
+            if(piece && (*piece)==target) {
+                *position=element;
+                return 0;
+            }
         }
     }
     return -1;

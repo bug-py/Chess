@@ -71,7 +71,7 @@ void special_pawn(chessboard_t board,vector_t* position,piece_t piece,array_t* a
 
 
 
-array_t* generation(chessboard_t board,vector_t* position){
+array_t* brut_generation(chessboard_t board,vector_t* position){
     piece_t* piece=get_piece(board,position);
     if(!piece) return NULL;
     array_t* array=safe_alloc(sizeof(array_t),1,NULL);
