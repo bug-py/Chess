@@ -7,7 +7,7 @@ FLAG=-Werror -Wextra  -I $(HEADER)
 
 all : $(BIN)chess.exe
 	
-$(BIN)chess.exe:  $(OBJ)main.o $(OBJ)vector.o $(OBJ)board.o $(OBJ)piece.o $(OBJ)dynamic_array.o $(OBJ)alloc.o $(OBJ)generation.o $(OBJ)move.o $(OBJ)direction.o $(OBJ)attack.o $(OBJ)game.o 
+$(BIN)chess.exe:  $(OBJ)main.o $(OBJ)vector.o $(OBJ)board.o $(OBJ)piece.o $(OBJ)dynamic_array.o $(OBJ)alloc.o $(OBJ)generation.o $(OBJ)move.o $(OBJ)direction.o $(OBJ)attack.o $(OBJ)game.o  $(OBJ)graphisme.o 
 	gcc $(FLAG) $^ -o $(BIN)chess.exe
 $(OBJ)main.o: $(SRC)main.c
 	gcc $(FLAG) -c  $< -o $@
@@ -30,6 +30,8 @@ $(OBJ)dynamic_array.o : $(SRC)dynamic_array.c $(HEADER)structdata/dynamic_array.
 $(OBJ)game.o : $(SRC)game.c $(HEADER)logique/game.h 
 	gcc $(FLAG) -c  $< -o $@
 $(OBJ)alloc.o : $(SRC)alloc.c $(HEADER)structdata/alloc.h 
+	gcc $(FLAG) -c  $< -o $@
+$(OBJ)graphisme.o : $(SRC)graphisme.c $(HEADER)graphisme.h 
 	gcc $(FLAG) -c  $< -o $@
 clean :
 	rm -r $(OBJ)*.o

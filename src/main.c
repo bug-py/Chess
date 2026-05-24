@@ -6,6 +6,7 @@
 #include "logique/attack.h"
 #include "logique/piece.h"
 #include "structdata/dynamic_array.h"
+#include "graphisme.h"
 void PrintPiece(char* name,piece_t piece){
    printf("%s type : ",name);
    switch(get_type(piece)){
@@ -52,6 +53,8 @@ int main(){
       putchar('\n');
    }
    vector_set(&position,1,0);
-   printf("attack : %i ",is_attack(board,&position,WHITE));
+   printf("attack : %i \n",is_attack(board,&position,WHITE));
+   ShownBoard(board,false);
+   ShownBoard(board,true);
    return 0;
 }
