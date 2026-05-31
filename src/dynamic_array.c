@@ -43,7 +43,7 @@ void* array_at(array_t* array,size_t index){
 void* array_get(array_t* array){
     return array->body;
 }
-size_t array_lenght(array_t* array){
+size_t array_length(array_t* array){
     return array->length;
 }
 void array_destroy(array_t* array){

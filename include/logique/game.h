@@ -2,14 +2,18 @@
 #define GAME_H
 #include "./piece.h"
 #include "./board.h"
-
+#include "./move.h"
+#include "structdata/dynamic_array.h"
 #include <stdbool.h>
 #include <stdint.h>
 typedef struct{
     chessboard_t board;
-    bool tour;
+    piece_color_t turn;
     int black_score;
     int white_score;
 }game_t;
-
+void init_game(game_t* game);
+int apply_move(game_t* game,movement_t* move);
+int undo_move(game_t* game,movement_t* move);
+array_t* legal_generation(game_t* game,vector_t* position);
 #endif
