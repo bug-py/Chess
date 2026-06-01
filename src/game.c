@@ -3,6 +3,17 @@
 #include "logique/attack.h"
 #include "structdata/alloc.h"
 #include  <stdlib.h>
+int get_score(piece_t piece){
+    switch(get_type(piece)){
+        case EMPTY : return 0;
+        case PAWN : return 1;
+        case KNIGHT : return 3; 
+        case BISHOP:  return 3;
+        case ROOK : return 5;
+        case QUEEN : return 9;
+        case KING : return -1;
+    }
+}
 void init_game(game_t* game){
     init_board(game->board);
     game->turn=WHITE;
@@ -28,6 +39,18 @@ int apply_move(game_t* game,movement_t* move){
             move_piece(from,to,NULL_PIECE);
             break;
     }
+    switch(game->turn){
+        case WHITE :
+            game->black_score-=get_score(move->captured_piece);
+            game->turn=BLACK;
+            break;
+        case BLACK :
+            game->white_score-=get_score(move->captured_piece);
+            game->turn=WHITE;
+            break;
+        case NO_COLOR:
+            return -1;
+    }
     return 0;
 }
 
@@ -37,13 +60,25 @@ int undo_move(game_t* game,movement_t* move){
     if(!from || !to || is_empty(*to) || move->moved_piece!=*to) return -1;
     switch(move->type){
         case NORMAL_MOVEMENT:
-            if(!is_empty(*from) ) return -1;
+            if(!is_empty(*from) || move->captured_piece!=NULL_PIECE) return -1;
             move_piece(to,from,NULL_PIECE);
             break;
         case ATTACK_MOVEMENT:
-            if(!is_empty(*from) ) return -1;
+            if(!is_empty(*from) || move->captured_piece==NULL_PIECE ) return -1;
             move_piece(to,from,move->captured_piece);
             break;
+    }
+    switch(game->turn){
+        case WHITE :
+            game->black_score+=get_score(move->captured_piece);
+            game->turn=BLACK;
+            break;
+        case BLACK :
+            game->white_score+=get_score(move->captured_piece);
+            game->turn=WHITE;
+            break;
+        case NO_COLOR:  
+            return -1;
     }
     return 0;
 }

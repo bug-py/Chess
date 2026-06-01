@@ -1,12 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include "logique/board.h"
-#include "logique/move.h"
-#include "logique/generation.h"
-#include "logique/attack.h"
-#include "logique/piece.h"
-#include "structdata/dynamic_array.h"
-#include "graphisme.h"
+#include "logique/game.h"
 void PrintPiece(char* name,piece_t piece){
    printf("%s type : ",name);
    switch(get_type(piece)){
@@ -36,25 +29,16 @@ void PrintMove(movement_t* move){
    switch(move->type){
       case NORMAL_MOVEMENT: printf("NORMAL MOVEMENT\n"); break;
       case ATTACK_MOVEMENT: printf("ATTACK MOVEMENT\n"); break;
-   }
-   
-   
+   }  
 }
 int main(){
-   chessboard_t board;
-   init_board(board);
-   vector_t position={.x=4,.y=3};
-   piece_t* piece=get_piece(board,&position);
-   *piece=init_piece(QUEEN,WHITE);
-   array_t* array=brut_generation(board,&position);
-   printf("SIZE : %lu\n\n",array->length);
+   game_t game;
+   init_game(&game);
+   vector_t position={.x=1,.y=1};
+   array_t* array=legal_generation(&game,&position);
    for(size_t i=0;i<array->length;i++){
-      PrintMove(array_at(array,i));
+      PrintMove((movement_t*)array_at(array,i));
       putchar('\n');
    }
-   vector_set(&position,1,0);
-   printf("attack : %i \n",is_attack(board,&position,WHITE));
-   ShownBoard(board,false);
-   ShownBoard(board,true);
-   return 0;
+   
 }

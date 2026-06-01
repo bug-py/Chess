@@ -41,3 +41,49 @@ void ShownBoard(chessboard_t board,bool reverse){
     }
     ShownLettre(board,reverse);
 }
+void TraductCordo(vector_t* position,char cordo[2],bool reverse){
+    switch(cordo[0]){
+        case 'A' : position->x=0; break;
+        case 'B' : position->x=1; break;
+        case 'C' : position->x=2; break;
+        case 'D' : position->x=3; break;
+        case 'E' : position->x=4; break;
+        case 'F' : position->x=5; break;
+        case 'G' : position->x=6; break;
+        case 'H' : position->x=7; break;
+    }
+    switch(cordo[1]){
+        case '1' : position->y=7; break;
+        case '2' : position->y=6; break;
+        case '3' : position->y=5; break;
+        case '4' : position->y=4; break;
+        case '5' : position->y=3; break;
+        case '6' : position->y=2; break;
+        case '7' : position->y=1; break;
+        case '8' : position->y=0; break;
+    }
+    if (reverse) vector_set(position,7-position->x,7-position->y); 
+}
+void TraductVector(char cordo[2],vector_t* position,bool reverse){
+    if (reverse) vector_set(position,7-position->x,7-position->y); 
+    switch(position->x){
+        case 0 : cordo[0]='A'; break;
+        case 1 : cordo[0]='B'; break;
+        case 2 : cordo[0]='C'; break;
+        case 3 : cordo[0]='D'; break;
+        case 4 : cordo[0]='E'; break;
+        case 5 : cordo[0]='F'; break;
+        case 6 : cordo[0]='G'; break;
+        case 7 : cordo[0]='H'; break;
+    }
+    switch(position->y){
+        case 0 : cordo[1]='8'; break;
+        case 1 : cordo[1]='7'; break;
+        case 2 : cordo[1]='6'; break;
+        case 3 : cordo[1]='5'; break;
+        case 4 : cordo[1]='4'; break;
+        case 5 : cordo[1]='3'; break;
+        case 6 : cordo[1]='2'; break;
+        case 7 : cordo[1]='1'; break;
+    }
+}
