@@ -3,6 +3,7 @@
 #include "./piece.h"
 #include "./board.h"
 #include "./move.h"
+#include "./special_move_state.h"
 #include "structdata/dynamic_array.h"
 #include <stdbool.h>
 #include <stdint.h>
@@ -15,6 +16,7 @@ typedef enum{
 }GameResult_t;
 typedef struct{
     chessboard_t board;
+    special_move_state_t state;
     piece_color_t turn;
     int black_score;
     int white_score;
@@ -22,6 +24,6 @@ typedef struct{
 void init_game(game_t* game);
 int apply_move(game_t* game,movement_t* move);
 int undo_move(game_t* game,movement_t* move);
-array_t* legal_generation(game_t* game,vector_t* position);
+array_t* legal_generation(game_t* game,vector_t* position,bool promotion);
 GameResult_t GetGameResult(game_t* game);
 #endif

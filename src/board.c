@@ -19,13 +19,13 @@ void init_board(chessboard_t board){
     }
     
 }
-bool is_inside(vector_t* position){
+bool is_inside(const vector_t* position){
     if(position->x<0 || position->y<0 || position->x>7 || position->y>7){
         return false;
     }
     return true;
 }
-piece_t* get_piece(chessboard_t board,vector_t* position){
+piece_t* get_piece(chessboard_t board,const vector_t* position){
     if(!is_inside(position)) return NULL;
     return (&board[position->y][position->x]);
 }

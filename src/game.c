@@ -17,6 +17,7 @@ int get_score(piece_t piece){
 }
 void init_game(game_t* game){
     init_board(game->board);
+    init_state(&(game->state));
     game->turn=WHITE;
     game->black_score=(8*1)+(2*3)+(2*3)+(2*5)+9;
     game->white_score=(8*1)+(2*3)+(2*3)+(2*5)+9;
@@ -39,6 +40,8 @@ int apply_move(game_t* game,movement_t* move){
             move->captured_piece=*to;
             move_piece(from,to,NULL_PIECE);
             break;
+        case UNDEFINED:
+            return -1;   
     }
     switch(game->turn){
         case WHITE :
@@ -68,6 +71,8 @@ int undo_move(game_t* game,movement_t* move){
             if(!is_empty(*from) || move->captured_piece==NULL_PIECE ) return -1;
             move_piece(to,from,move->captured_piece);
             break;
+        case UNDEFINED :
+            return -1;
     }
     switch(game->turn){
         case WHITE :
@@ -84,10 +89,10 @@ int undo_move(game_t* game,movement_t* move){
     return 0;
 }
 
-array_t* legal_generation(game_t* game,vector_t* position){
+array_t* legal_generation(game_t* game,vector_t* position,bool promotion){
   array_t* legal_moves=safe_alloc(sizeof(array_t),1,NULL);
   array_init(legal_moves,sizeof(movement_t),5);
-  array_t* brut_moves=brut_generation(game->board,position);
+  array_t* brut_moves=brut_generation(game->board,position,&(game->state),promotion);
   piece_t color_king=game->turn;
   for(size_t i=0;i<array_length(brut_moves);i++){
     movement_t* move=array_at(brut_moves,i);
@@ -107,7 +112,7 @@ GameResult_t GetGameResult(game_t* game){
             vector_set(&position,x,y);
             piece_t* piece=get_piece(game->board,&position);
             if(piece && game->turn==get_color(*piece)){
-                array_t* array=legal_generation(game,&position);
+                array_t* array=legal_generation(game,&position,false);
                 size_t length=array_length(array);
                 array_destroy(array);
                 free(array);

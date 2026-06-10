@@ -18,6 +18,10 @@ int get_roque_bitmask(roque_type_t type_roque){
         default : return 0;
     }
 }
+void init_state(special_move_state_t* state){
+    state->in_passing=0;
+    state->roque=0x0F;
+}
 int get_in_passing(special_move_state_t* state){
     switch(state->in_passing){
         case 1<<0: return 0;

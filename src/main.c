@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "graphisme.h"
 #include "logique/game.h"
+#include "logique/generation.h"
 #include <stdlib.h>
 void PrintPiece(char* name,piece_t piece){
    printf("%s type : ",name);
@@ -31,12 +32,21 @@ void PrintMove(movement_t* move){
    switch(move->type){
       case NORMAL_MOVEMENT: printf("NORMAL MOVEMENT\n"); break;
       case ATTACK_MOVEMENT: printf("ATTACK MOVEMENT\n"); break;
+      case BIG_ROQUE : printf("BIG-ROQUE MOVEMENT\n"); break;
+      case LITTLE_ROQUE : printf("LITTLE-ROQUE MOVEMENT\n"); break;
    }  
 }
 int main(){
    game_t game;
-
+   
    init_game(&game);
+   vector_t position={4,0};
+   array_t* array=brut_generation(game.board,&position,&(game.state),false);
+   for(size_t i=0;i<array->length;i++){
+      PrintMove(((movement_t*)array->body)+i);
+   }
+   printf("END\n");
+  
    while(1){
       switch(GetGameResult(&game)){
          case GAME_IN_PROGRESS :
@@ -62,7 +72,7 @@ int main(){
 
       TraductCordo(from,&begin,false);
       TraductCordo(to,&end,false);
-      array_t* coup=legal_generation(&game,&begin);
+      array_t* coup=legal_generation(&game,&begin,false);
       for(size_t i=0;i<coup->length;i++){
          movement_t* move=array_at(coup,i);
          if(move->to.x==end.x && move->to.y==end.y){

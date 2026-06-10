@@ -12,6 +12,7 @@ typedef struct {
   uint8_t roque;
   uint8_t in_passing;
 } special_move_state_t;
+void init_state(special_move_state_t* state);
 int get_in_passing(special_move_state_t* state);
 void set_in_passing(special_move_state_t* state,int collum);
 bool get_roque(special_move_state_t* state,roque_type_t type_roque);

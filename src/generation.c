@@ -1,7 +1,7 @@
 #include "logique/generation.h"
 #include "structdata/alloc.h"
 #include "logique/direction.h"
-
+#include <stdio.h>
 void step_movement(chessboard_t board,vector_t* position,piece_t piece,array_t* array,const vector_t* vector,size_t length){
     vector_t to;
     for(size_t i=0;i<length;i++){
@@ -68,22 +68,67 @@ void special_pawn(chessboard_t board,vector_t* position,piece_t piece,array_t* a
 
     } 
 }
+bool roque(chessboard_t board,piece_color_t color,movement_t* move,const roque_data_t* brut_info){
+    
+    piece_t* king=get_piece(board,&(brut_info->start_king));
+    if(!king || get_type(*king)!=KING|| get_color(*king)!=color ) return false;
+    printf("ok\n");
+    piece_t* rook=get_piece(board,&(brut_info->start_rook));
+    if(!rook || get_type(*rook)!=ROOK ||  get_color(*rook)!=color) return false;
+    printf("ok\n");
+    for(size_t i=0;i<brut_info->count_empty_case;i++){
+        piece_t* piece=get_piece(board,&(brut_info->empty_case[i]));
+        if (!piece || !is_empty(*piece)) return false;
+    }
+    printf("ok\n");
+    init_move(move,&(brut_info->start_king),&(brut_info->end_king),*king,NULL_PIECE,UNDEFINED);
+    return true;
+}
+void special_king(chessboard_t board,vector_t* position,piece_t piece,special_move_state_t* state,array_t* array){
+    step_movement(board,position,piece,array,king,SIZE_KING);
+   
+    movement_t move_roque;
+    switch(get_color(piece)){
+        case BLACK:
+            if(get_roque(state,BLACK_BIG_ROQUE) && roque(board,BLACK,&move_roque,&black_big_roque)){
+                    move_roque.type=BIG_ROQUE;
+                    array_append(array,&move_roque);
+            }
+            if(get_roque(state,BLACK_LITTLE_ROQUE) && roque(board,BLACK,&move_roque,&black_little_roque)){
+                    move_roque.type=LITTLE_ROQUE;
+                    array_append(array,&move_roque);
+            }
+            break;
+        case WHITE :
+            if(get_roque(state, WHITE_BIG_ROQUE) && roque(board,WHITE,&move_roque,&white_big_roque)){
+                    move_roque.type=BIG_ROQUE;
+                    array_append(array,&move_roque);
+            }
+            if(get_roque(state,WHITE_LITTLE_ROQUE) && roque(board,WHITE,&move_roque,&white_little_roque)){
+                    move_roque.type=LITTLE_ROQUE;
+                    array_append(array,&move_roque);
+            }
+            break;
+        case NO_COLOR:
+            return;
+    }
+}
 
 
-
-array_t* brut_generation(chessboard_t board,vector_t* position){
+array_t* brut_generation(chessboard_t board,vector_t* position,special_move_state_t* state,bool promotion){
+   
     piece_t* piece=get_piece(board,position);
     if(!piece) return NULL;
     array_t* array=safe_alloc(sizeof(array_t),1,NULL);
     array_init(array,sizeof(movement_t),5);
     switch(get_type(*piece)){
-        case EMPTY :  break;
+        case EMPTY :   break;
         case PAWN :   special_pawn(board,position,*piece,array); break;
         case KNIGHT : step_movement(board,position,*piece,array,knight,SIZE_KNIGHT); break;
         case BISHOP : ray_movement(board,position,*piece,array,bishop,SIZE_BISHOP); break;
         case ROOK :   ray_movement(board,position,*piece,array,rook,SIZE_ROOK); break;
         case QUEEN :  ray_movement(board,position,*piece,array,queen,SIZE_QUEEN); break;
-        case KING :   step_movement(board,position,*piece,array,king,SIZE_KING); break;
+        case KING :   special_king(board,position,*piece,state,array);  break;
     }
     return array;
 }
