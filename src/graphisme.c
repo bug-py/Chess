@@ -41,7 +41,7 @@ void ShownBoard(chessboard_t board,bool reverse){
     }
     ShownLettre(board,reverse);
 }
-void TraductCordo(vector_t* position,char cordo[2],bool reverse){
+void TraductCordo(char cordo[3],vector_t* position,bool reverse){
     switch(cordo[0]){
         case 'A' : position->x=0; break;
         case 'B' : position->x=1; break;
@@ -64,7 +64,7 @@ void TraductCordo(vector_t* position,char cordo[2],bool reverse){
     }
     if (reverse) vector_set(position,7-position->x,7-position->y); 
 }
-void TraductVector(char cordo[2],vector_t* position,bool reverse){
+void TraductVector(vector_t* position,char cordo[3],bool reverse){
     if (reverse) vector_set(position,7-position->x,7-position->y); 
     switch(position->x){
         case 0 : cordo[0]='A'; break;

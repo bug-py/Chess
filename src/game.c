@@ -3,6 +3,7 @@
 #include "logique/attack.h"
 #include "structdata/alloc.h"
 #include  <stdlib.h>
+
 int get_score(piece_t piece){
     switch(get_type(piece)){
         case EMPTY : return 0;
@@ -87,14 +88,41 @@ array_t* legal_generation(game_t* game,vector_t* position){
   array_t* legal_moves=safe_alloc(sizeof(array_t),1,NULL);
   array_init(legal_moves,sizeof(movement_t),5);
   array_t* brut_moves=brut_generation(game->board,position);
+  piece_t color_king=game->turn;
   for(size_t i=0;i<array_length(brut_moves);i++){
     movement_t* move=array_at(brut_moves,i);
     apply_move(game,move);
-    if(!is_echec(game->board,game->turn)) array_append(legal_moves,move);
+    if(!is_echec(game->board,color_king)) array_append(legal_moves,move);
     undo_move(game,move);
   }
   array_destroy(brut_moves);
   free(brut_moves);
 
   return legal_moves;
+}
+GameResult_t GetGameResult(game_t* game){
+    vector_t position;
+    for(size_t y=0;y<8;y++){
+        for (size_t x=0;x<8;x++){
+            vector_set(&position,x,y);
+            piece_t* piece=get_piece(game->board,&position);
+            if(piece && game->turn==get_color(*piece)){
+                array_t* array=legal_generation(game,&position);
+                size_t length=array_length(array);
+                array_destroy(array);
+                free(array);
+                if(length>0) return GAME_IN_PROGRESS;
+            }
+        }
+    }
+    if(is_echec(game->board,game->turn)){
+        switch(game->turn){
+            case BLACK : return GAME_VICTORY_WHITE;
+            case WHITE : return GAME_VICTORY_BLACK;
+        }
+    }else{
+        return GAME_DRAWN;
+    }
+   
+   
 }

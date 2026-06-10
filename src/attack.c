@@ -68,13 +68,13 @@ int search_king(chessboard_t board,piece_color_t color,vector_t* position){
     return -1;
 }
 
-int is_echec(chessboard_t board,piece_color_t color_enemy){
+int is_echec(chessboard_t board,piece_color_t color_king){
     vector_t position;
-    piece_color_t color_king;
-    switch(color_enemy){
+    piece_color_t color_enemy;
+    switch(color_king){
         case NO_COLOR: return -1;
-        case BLACK : color_king=WHITE; break;
-        case WHITE : color_king=BLACK; break;
+        case BLACK : color_enemy=WHITE; break;
+        case WHITE : color_enemy=BLACK; break;
     }
     if(search_king(board,color_king,&position)<0) return -1;
     return is_attack(board,&position,color_enemy);

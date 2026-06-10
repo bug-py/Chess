@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include "graphisme.h"
 #include "logique/game.h"
+#include <stdlib.h>
 void PrintPiece(char* name,piece_t piece){
    printf("%s type : ",name);
    switch(get_type(piece)){
@@ -33,12 +35,44 @@ void PrintMove(movement_t* move){
 }
 int main(){
    game_t game;
+
    init_game(&game);
-   vector_t position={.x=1,.y=1};
-   array_t* array=legal_generation(&game,&position);
-   for(size_t i=0;i<array->length;i++){
-      PrintMove((movement_t*)array_at(array,i));
-      putchar('\n');
+   while(1){
+      switch(GetGameResult(&game)){
+         case GAME_IN_PROGRESS :
+            printf("PROGRESS...\n");
+            break;
+         case GAME_VICTORY_BLACK :
+            printf("VICTORY BLACK !\n");
+            return 0;
+         case GAME_VICTORY_WHITE :
+            printf("VICTORY WHITE !\n");
+            return 0;
+         case GAME_DRAWN :
+            printf("DRAWN \n");
+            return 0;
+      }
+      bool reverse=(game.turn==BLACK);
+      ShownBoard(game.board,reverse);
+      char from[3]="  ";
+      char to[3]="  ";
+      scanf(" %c%c => %c%c",&(from[0]),&(from[1]),&(to[0]),&(to[1]));
+      vector_t begin;
+      vector_t end;
+
+      TraductCordo(from,&begin,false);
+      TraductCordo(to,&end,false);
+      array_t* coup=legal_generation(&game,&begin);
+      for(size_t i=0;i<coup->length;i++){
+         movement_t* move=array_at(coup,i);
+         if(move->to.x==end.x && move->to.y==end.y){
+            
+            apply_move(&game,move);
+            break;
+         }
    }
-   
+   array_destroy(coup);
+   free(coup);
+   }
+ 
 }
