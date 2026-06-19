@@ -29,7 +29,7 @@ void PrintMove(movement_t* move){
    printf("to | x : %d y: %d|\n",move->to.x,move->to.y);
    PrintPiece("MOVED PIECE",move->moved_piece);
    PrintPiece("CAPTURED PIECE",move->captured_piece);
-   switch(move->type){
+   switch(move->flag){
       case NORMAL_MOVEMENT: printf("NORMAL MOVEMENT\n"); break;
       case ATTACK_MOVEMENT: printf("ATTACK MOVEMENT\n"); break;
       case BIG_ROQUE : printf("BIG-ROQUE MOVEMENT\n"); break;
@@ -75,7 +75,7 @@ int main(){
       array_t* coup=legal_generation(&game,&begin,false);
       for(size_t i=0;i<coup->length;i++){
          movement_t* move=array_at(coup,i);
-         if(move->to.x==end.x && move->to.y==end.y){
+         if(vector_cmp(&begin,&(move->from)) && vector_cmp(&end,&(move->to))){
             
             apply_move(&game,move);
             break;

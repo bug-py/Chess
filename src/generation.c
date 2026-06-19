@@ -71,17 +71,14 @@ void special_pawn(chessboard_t board,vector_t* position,piece_t piece,array_t* a
 bool roque(chessboard_t board,piece_color_t color,movement_t* move,const roque_data_t* brut_info){
     
     piece_t* king=get_piece(board,&(brut_info->start_king));
-    if(!king || get_type(*king)!=KING|| get_color(*king)!=color ) return false;
-    printf("ok\n");
+    if(  !(king && get_type(*king)==KING && get_color(*king)==color) ) return false;
     piece_t* rook=get_piece(board,&(brut_info->start_rook));
-    if(!rook || get_type(*rook)!=ROOK ||  get_color(*rook)!=color) return false;
-    printf("ok\n");
+    if( ! (rook && get_type(*rook)==ROOK &&  get_color(*rook)==color)) return false;
     for(size_t i=0;i<brut_info->count_empty_case;i++){
         piece_t* piece=get_piece(board,&(brut_info->empty_case[i]));
-        if (!piece || !is_empty(*piece)) return false;
+        if (! (piece && is_empty(*piece))) return false;
     }
-    printf("ok\n");
-    init_move(move,&(brut_info->start_king),&(brut_info->end_king),*king,NULL_PIECE,UNDEFINED);
+    init_move(move,&(brut_info->start_king),&(brut_info->end_king),*king,NULL_PIECE,NORMAL_MOVEMENT);
     return true;
 }
 void special_king(chessboard_t board,vector_t* position,piece_t piece,special_move_state_t* state,array_t* array){
@@ -91,21 +88,21 @@ void special_king(chessboard_t board,vector_t* position,piece_t piece,special_mo
     switch(get_color(piece)){
         case BLACK:
             if(get_roque(state,BLACK_BIG_ROQUE) && roque(board,BLACK,&move_roque,&black_big_roque)){
-                    move_roque.type=BIG_ROQUE;
+                    move_roque.flag=BIG_ROQUE;
                     array_append(array,&move_roque);
             }
             if(get_roque(state,BLACK_LITTLE_ROQUE) && roque(board,BLACK,&move_roque,&black_little_roque)){
-                    move_roque.type=LITTLE_ROQUE;
+                    move_roque.flag=LITTLE_ROQUE;
                     array_append(array,&move_roque);
             }
             break;
         case WHITE :
             if(get_roque(state, WHITE_BIG_ROQUE) && roque(board,WHITE,&move_roque,&white_big_roque)){
-                    move_roque.type=BIG_ROQUE;
+                   move_roque.flag=BIG_ROQUE;
                     array_append(array,&move_roque);
             }
             if(get_roque(state,WHITE_LITTLE_ROQUE) && roque(board,WHITE,&move_roque,&white_little_roque)){
-                    move_roque.type=LITTLE_ROQUE;
+                    move_roque.flag=LITTLE_ROQUE;
                     array_append(array,&move_roque);
             }
             break;

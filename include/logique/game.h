@@ -23,7 +23,7 @@ typedef struct{
 }game_t;
 void init_game(game_t* game);
 int apply_move(game_t* game,movement_t* move);
-int undo_move(game_t* game,movement_t* move);
+int undo_move(game_t* game,movement_t* move,special_move_state_t* reset);
 array_t* legal_generation(game_t* game,vector_t* position,bool promotion);
 GameResult_t GetGameResult(game_t* game);
 #endif

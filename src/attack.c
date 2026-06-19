@@ -1,7 +1,7 @@
 #include "logique/attack.h"
 #include "logique/direction.h"
 #include <stddef.h>
-bool check_ray_movement(chessboard_t board,vector_t* position,piece_t enemy,const vector_t* vector,size_t size){ 
+bool check_ray_movement(chessboard_t board,const vector_t* position,piece_t enemy,const vector_t* vector,size_t size){ 
     for(size_t i=0;i<size;i++){
         vector_t to=*position;
         while(true){
@@ -14,7 +14,7 @@ bool check_ray_movement(chessboard_t board,vector_t* position,piece_t enemy,cons
     }
     return false;
 }
-bool check_step_movement(chessboard_t board,vector_t* position,piece_t enemy,const vector_t* vector,size_t size){
+bool check_step_movement(chessboard_t board,const vector_t* position,piece_t enemy,const vector_t* vector,size_t size){
     vector_t to;
     for(size_t i=0;i<size;i++){
         vector_add(position,&(vector[i]),&to);
@@ -24,7 +24,7 @@ bool check_step_movement(chessboard_t board,vector_t* position,piece_t enemy,con
     }
     return false;
 }
-bool check_PAWN(chessboard_t board,vector_t* position,piece_color_t color_enemy){
+bool check_PAWN(chessboard_t board,const vector_t* position,piece_color_t color_enemy){
     int color=(color_enemy==WHITE)? 1 : 0;
     piece_t enemy=init_piece(PAWN,color_enemy);
     vector_t to;
@@ -39,7 +39,7 @@ bool check_PAWN(chessboard_t board,vector_t* position,piece_color_t color_enemy)
 }
 
 
-int is_attack(chessboard_t board,vector_t* position,piece_color_t color_enemy){
+int is_attack(chessboard_t board,const vector_t* position,piece_color_t color_enemy){
     if(!is_inside(position)) return -1;
     if(
         check_PAWN(board,position,color_enemy) ||
