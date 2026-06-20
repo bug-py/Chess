@@ -39,7 +39,23 @@ void ray_movement(chessboard_t board,vector_t* position,piece_t piece,array_t* a
         }
     }
 }
-void special_pawn(chessboard_t board,vector_t* position,piece_t piece,array_t* array){
+bool in_passing(chessboard_t board,vector_t* position,piece_t piece,movement_t* move,int column){
+    if (column<0) return false;
+    bool is_white=(get_color(piece)==WHITE);
+    vector_t position_in_passing_right;
+    vector_t position_in_passing_left;
+    vector_t position_in_passing_to;
+    vector_set(&position_in_passing_right,column-1,is_white ? 4 : 3 );
+    vector_set(&position_in_passing_left,column+1,is_white ? 4 : 3 );
+    vector_set(&position_in_passing_to,column,is_white ? 3 : 5 );
+    if(vector_cmp(position,&position_in_passing_left) || vector_cmp(position,&position_in_passing_right) ){
+        init_move(move,position,&position_in_passing_to,piece,NULL_PIECE,IN_PASSING);
+        return true;
+    }
+    return false;
+
+}
+void special_pawn(chessboard_t board,vector_t* position,piece_t piece,special_move_state_t* state,array_t* array){
     int color=(get_color(piece)==WHITE) ? 0 : 1;
     piece_t* other;
     vector_t to;
@@ -65,8 +81,13 @@ void special_pawn(chessboard_t board,vector_t* position,piece_t piece,array_t* a
             array_append(array,NULL);
             init_move( array_at(array,array->length-1), position,&to, piece,*other, ATTACK_MOVEMENT );
         }
-
     } 
+    movement_t move_passing;
+    if(in_passing(board,position,piece,&move_passing,get_in_passing(state))){
+        array_append(array,&move_passing);
+    }
+    
+
 }
 bool roque(chessboard_t board,piece_color_t color,movement_t* move,const roque_data_t* brut_info){
     
@@ -120,7 +141,7 @@ array_t* brut_generation(chessboard_t board,vector_t* position,special_move_stat
     array_init(array,sizeof(movement_t),5);
     switch(get_type(*piece)){
         case EMPTY :   break;
-        case PAWN :   special_pawn(board,position,*piece,array); break;
+        case PAWN :   special_pawn(board,position,*piece,state,array); break;
         case KNIGHT : step_movement(board,position,*piece,array,knight,SIZE_KNIGHT); break;
         case BISHOP : ray_movement(board,position,*piece,array,bishop,SIZE_BISHOP); break;
         case ROOK :   ray_movement(board,position,*piece,array,rook,SIZE_ROOK); break;

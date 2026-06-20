@@ -23,7 +23,8 @@ void init_game(game_t* game){
     game->black_score=(8*1)+(2*3)+(2*3)+(2*5)+9;
     game->white_score=(8*1)+(2*3)+(2*3)+(2*5)+9;
 }
-void update_state(special_move_state_t* state,piece_t piece,vector_t* from){
+void update_state(special_move_state_t* state,piece_t piece,vector_t* from,vector_t* to){
+    set_in_passing(state,-1);
     bool is_white=(get_color(piece)==WHITE);
     switch(get_type(piece)){
         case KING :
@@ -43,10 +44,15 @@ void update_state(special_move_state_t* state,piece_t piece,vector_t* from){
                 break;
             }
             break;
+        case PAWN:
+            if( is_white ? (from->y==6 && to->y==4) : (from->y==1 && to->y==3)){
+                set_in_passing(state,from->x);
+            }
+            break;
         default : 
             break;
     }
-    set_in_passing(state,-1);
+   
 }
 int apply_move(game_t* game,movement_t* move){
     piece_t* from=get_piece(game->board,&(move->from));
@@ -54,7 +60,7 @@ int apply_move(game_t* game,movement_t* move){
     if(!from || !to ) return -1;
     if(is_empty(*from)) return -1;
     move->moved_piece=*from;
-    update_state(&(game->state),*from,&(move->from));
+    move->captured_piece=NULL_PIECE;
     if(move->flag & ATTACK_MOVEMENT){
         if(is_empty(*to) || get_color(*from)==get_color(*to)) return -1;
         move->captured_piece=*to;
@@ -77,6 +83,7 @@ int apply_move(game_t* game,movement_t* move){
 
         move_piece(rook_piece,empty_piece,NULL_PIECE);
     }
+    update_state(&(game->state),*from,&(move->from),&(move->to));
     move_piece(from,to,NULL_PIECE);
 
     switch(game->turn){
