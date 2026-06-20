@@ -83,6 +83,17 @@ int apply_move(game_t* game,movement_t* move){
 
         move_piece(rook_piece,empty_piece,NULL_PIECE);
     }
+    if(move->flag & IN_PASSING){
+        bool is_white=(get_color(*from)==WHITE);
+        if(get_type(*from)!=PAWN || !is_empty(*to)) return -1;
+        vector_t pos_captured_pawn;
+        vector_set(&pos_captured_pawn,move->to.x,is_white ? move->to.y+1 : move->to.y-1 );
+        piece_t * captured_pawn=get_piece(game->board,&pos_captured_pawn);
+        if(!captured_pawn || get_type(*captured_pawn)!=PAWN) return -1;
+        move->captured_piece=*captured_pawn;
+        *captured_pawn=NULL_PIECE;
+
+    }
     update_state(&(game->state),*from,&(move->from),&(move->to));
     move_piece(from,to,NULL_PIECE);
 
@@ -129,6 +140,16 @@ int undo_move(game_t* game,movement_t* move,special_move_state_t* reset){
         if(!rook_piece || get_type(*rook_piece)!=ROOK) return -1;
 
         move_piece(rook_piece,empty_piece,NULL_PIECE);
+    }
+    if(move->flag & IN_PASSING){
+        bool is_white=(get_color(*from)==WHITE);
+        if(get_type(*from)!=PAWN ) return -1;
+        vector_t pos_captured_pawn;
+        vector_set(&pos_captured_pawn,move->to.x,is_white ? move->to.y+1 : move->to.y-1 );
+        piece_t * captured_pawn=get_piece(game->board,&pos_captured_pawn);
+        if(!captured_pawn || !is_empty(*captured_pawn)) return -1;
+        *captured_pawn=move->captured_piece;
+
     }
     switch(game->turn){
         case WHITE :

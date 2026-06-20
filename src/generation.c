@@ -1,7 +1,6 @@
 #include "logique/generation.h"
 #include "structdata/alloc.h"
 #include "logique/direction.h"
-#include <stdio.h>
 void step_movement(chessboard_t board,vector_t* position,piece_t piece,array_t* array,const vector_t* vector,size_t length){
     vector_t to;
     for(size_t i=0;i<length;i++){
@@ -44,11 +43,15 @@ bool in_passing(chessboard_t board,vector_t* position,piece_t piece,movement_t* 
     bool is_white=(get_color(piece)==WHITE);
     vector_t position_in_passing_right;
     vector_t position_in_passing_left;
-    vector_t position_in_passing_to;
-    vector_set(&position_in_passing_right,column-1,is_white ? 4 : 3 );
-    vector_set(&position_in_passing_left,column+1,is_white ? 4 : 3 );
-    vector_set(&position_in_passing_to,column,is_white ? 3 : 5 );
+   
+    vector_set(&position_in_passing_right,column-1,is_white ? 3 : 4 );
+    vector_set(&position_in_passing_left,column+1,is_white ? 3 : 4 );
+    
     if(vector_cmp(position,&position_in_passing_left) || vector_cmp(position,&position_in_passing_right) ){
+        vector_t position_in_passing_to;
+        vector_set(&position_in_passing_to,column,is_white ? 2 : 5 );
+        piece_t* empty=get_piece(board,&position_in_passing_to);
+        if(!empty || !is_empty(*empty)) return false;
         init_move(move,position,&position_in_passing_to,piece,NULL_PIECE,IN_PASSING);
         return true;
     }
@@ -134,7 +137,6 @@ void special_king(chessboard_t board,vector_t* position,piece_t piece,special_mo
 
 
 array_t* brut_generation(chessboard_t board,vector_t* position,special_move_state_t* state,bool promotion){
-   
     piece_t* piece=get_piece(board,position);
     if(!piece) return NULL;
     array_t* array=safe_alloc(sizeof(array_t),1,NULL);

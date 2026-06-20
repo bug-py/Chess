@@ -77,10 +77,11 @@ int main(){
          movement_t* move=array_at(coup,i);
          if(vector_cmp(&begin,&(move->from)) && vector_cmp(&end,&(move->to))){
             
-            apply_move(&game,move);
+            printf("%i\n",apply_move(&game,move));
             break;
          }
-   }
+      }
+      
    array_destroy(coup);
    free(coup);
    }
