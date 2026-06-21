@@ -4,7 +4,7 @@
 #include "structdata/alloc.h"
 #include "logique/direction.h"
 #include  <stdlib.h>
-
+#include <stdio.h>
 int get_score(piece_t piece){
     switch(get_type(piece)){
         case EMPTY : return 0;
@@ -94,16 +94,29 @@ int apply_move(game_t* game,movement_t* move){
         *captured_pawn=NULL_PIECE;
 
     }
+    
     update_state(&(game->state),*from,&(move->from),&(move->to));
     move_piece(from,to,NULL_PIECE);
-
+    if(move->flag & PROMOTION_MOVEMENT){
+        *to=move->promotion;
+    }else{
+        move->promotion=NULL_PIECE;
+    }
     switch(game->turn){
         case WHITE :
             game->black_score-=get_score(move->captured_piece);
+            if(move->promotion!=NULL_PIECE){
+                 game->white_score+=get_score(move->promotion);
+                 game->white_score-=get_score(init_piece(PAWN,WHITE));
+            }
             game->turn=BLACK;
             break;
         case BLACK :
             game->white_score-=get_score(move->captured_piece);
+            if(move->promotion!=NULL_PIECE){
+                game->black_score+=get_score(move->promotion);
+                game->black_score-=get_score(init_piece(PAWN,BLACK));
+            }
             game->turn=WHITE;
             break;
         case NO_COLOR:
@@ -116,7 +129,7 @@ int undo_move(game_t* game,movement_t* move,special_move_state_t* reset){
     piece_t* from=get_piece(game->board,&(move->from));
     piece_t* to=get_piece(game->board,&(move->to));
     if(!from || !to ) return -1;
-    if(!is_empty(*from) ||is_empty(*to) || move->moved_piece!=*to) return -1;
+    if(!is_empty(*from) ||is_empty(*to) ) return -1;
     move_piece(to,from,NULL_PIECE);
     if(move->flag & ATTACK_MOVEMENT){
         if(move->captured_piece==NULL_PIECE) return -1;
@@ -151,13 +164,24 @@ int undo_move(game_t* game,movement_t* move,special_move_state_t* reset){
         *captured_pawn=move->captured_piece;
 
     }
+    if(move->flag & PROMOTION_MOVEMENT){
+        *from=init_piece(PAWN,get_color(*from));
+    }
     switch(game->turn){
         case WHITE :
             game->black_score+=get_score(move->captured_piece);
+            if(move->promotion!=NULL_PIECE){
+                 game->white_score-=get_score(move->promotion);
+                 game->white_score+=get_score(init_piece(PAWN,WHITE));
+            }
             game->turn=BLACK;
             break;
         case BLACK :
             game->white_score+=get_score(move->captured_piece);
+            if(move->promotion!=NULL_PIECE){
+                game->black_score-=get_score(move->promotion);
+                game->black_score+=get_score(init_piece(PAWN,BLACK));
+            }
             game->turn=WHITE;
             break;
         case NO_COLOR:  

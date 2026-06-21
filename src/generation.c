@@ -9,10 +9,10 @@ void step_movement(chessboard_t board,vector_t* position,piece_t piece,array_t* 
         if(!other) continue;
         if(is_empty(*other)){
             array_append(array,NULL);
-            init_move(array_at(array,array->length-1), position,&to, piece,NULL_PIECE,NORMAL_MOVEMENT);
+            init_move(array_at(array,array->length-1), position,&to, piece,NULL_PIECE,NULL_PIECE,NORMAL_MOVEMENT);
         }else if(get_color(piece)!=get_color(*other)){
             array_append(array,NULL);
-            init_move(array_at(array,array->length-1), position,&to, piece,*other,ATTACK_MOVEMENT);
+            init_move(array_at(array,array->length-1), position,&to, piece,*other,NULL_PIECE,ATTACK_MOVEMENT);
         }
     }   
 }
@@ -26,12 +26,12 @@ void ray_movement(chessboard_t board,vector_t* position,piece_t piece,array_t* a
             if(!other) break;
             if(is_empty(*other)){
                 array_append(array,NULL);
-                init_move(array_at(array,array->length-1), position,&to, piece,NULL_PIECE,NORMAL_MOVEMENT);
+                init_move(array_at(array,array->length-1), position,&to, piece,NULL_PIECE,NULL_PIECE,NORMAL_MOVEMENT);
                 continue;
             }
             if(get_color(piece)!=get_color(*other)){
                 array_append(array,NULL);
-                init_move(array_at(array,array->length-1), position,&to, piece,*other,ATTACK_MOVEMENT);
+                init_move(array_at(array,array->length-1), position,&to, piece,*other,NULL_PIECE,ATTACK_MOVEMENT);
             } 
             break;
 
@@ -52,13 +52,14 @@ bool in_passing(chessboard_t board,vector_t* position,piece_t piece,movement_t* 
         vector_set(&position_in_passing_to,column,is_white ? 2 : 5 );
         piece_t* empty=get_piece(board,&position_in_passing_to);
         if(!empty || !is_empty(*empty)) return false;
-        init_move(move,position,&position_in_passing_to,piece,NULL_PIECE,IN_PASSING);
+        init_move(move,position,&position_in_passing_to,piece,NULL_PIECE,NULL_PIECE,IN_PASSING);
         return true;
     }
     return false;
 
 }
-void special_pawn(chessboard_t board,vector_t* position,piece_t piece,special_move_state_t* state,array_t* array){
+
+void special_pawn(chessboard_t board,vector_t* position,piece_t piece,special_move_state_t* state,bool promotion,array_t* array){
     int color=(get_color(piece)==WHITE) ? 0 : 1;
     piece_t* other;
     vector_t to;
@@ -66,13 +67,18 @@ void special_pawn(chessboard_t board,vector_t* position,piece_t piece,special_mo
     other=get_piece(board,&to);
     if(other && is_empty(*other)){
         array_append(array,NULL);
-        init_move( array_at(array,array->length-1), position,&to, piece,NULL_PIECE, NORMAL_MOVEMENT );
+        if(to.y==(color ? 7 : 0)){
+             init_move( array_at(array,array->length-1), position,&to, piece,NULL_PIECE,init_piece(QUEEN,get_color(piece)), PROMOTION_MOVEMENT );
+        }else{
+            init_move( array_at(array,array->length-1), position,&to, piece,NULL_PIECE,NULL_PIECE, NORMAL_MOVEMENT );
+        }
+       
         if(position->y== (color ? 1 : 6)){
             vector_add(position,&(pawn[color][1]),&to);
             other=get_piece(board,&to);
             if(other && is_empty(*other)){
                 array_append(array,NULL);
-                init_move( array_at(array,array->length-1), position,&to, piece,NULL_PIECE, NORMAL_MOVEMENT );
+                init_move( array_at(array,array->length-1), position,&to, piece,NULL_PIECE,NULL_PIECE, NORMAL_MOVEMENT );
             }
         }
          
@@ -82,7 +88,11 @@ void special_pawn(chessboard_t board,vector_t* position,piece_t piece,special_mo
         other=get_piece(board,&to);
         if(other && !is_empty(*other) && get_color(*other)!=get_color(piece)){
             array_append(array,NULL);
-            init_move( array_at(array,array->length-1), position,&to, piece,*other, ATTACK_MOVEMENT );
+            if(to.y==(color ? 7 : 0)){
+             init_move( array_at(array,array->length-1), position,&to, piece,*other,init_piece(QUEEN,get_color(piece)), ATTACK_MOVEMENT | PROMOTION_MOVEMENT);
+            }else{
+            init_move( array_at(array,array->length-1), position,&to, piece,*other,NULL_PIECE, ATTACK_MOVEMENT);
+             }
         }
     } 
     movement_t move_passing;
@@ -102,7 +112,7 @@ bool roque(chessboard_t board,piece_color_t color,movement_t* move,const roque_d
         piece_t* piece=get_piece(board,&(brut_info->empty_case[i]));
         if (! (piece && is_empty(*piece))) return false;
     }
-    init_move(move,&(brut_info->start_king),&(brut_info->end_king),*king,NULL_PIECE,NORMAL_MOVEMENT);
+    init_move(move,&(brut_info->start_king),&(brut_info->end_king),*king,NULL_PIECE,NULL_PIECE,NORMAL_MOVEMENT);
     return true;
 }
 void special_king(chessboard_t board,vector_t* position,piece_t piece,special_move_state_t* state,array_t* array){
@@ -143,7 +153,7 @@ array_t* brut_generation(chessboard_t board,vector_t* position,special_move_stat
     array_init(array,sizeof(movement_t),5);
     switch(get_type(*piece)){
         case EMPTY :   break;
-        case PAWN :   special_pawn(board,position,*piece,state,array); break;
+        case PAWN :   special_pawn(board,position,*piece,state,promotion,array); break;
         case KNIGHT : step_movement(board,position,*piece,array,knight,SIZE_KNIGHT); break;
         case BISHOP : ray_movement(board,position,*piece,array,bishop,SIZE_BISHOP); break;
         case ROOK :   ray_movement(board,position,*piece,array,rook,SIZE_ROOK); break;

@@ -22,5 +22,5 @@ typedef struct{
     uint8_t flag;
 
 }movement_t;
-void init_move(movement_t* move,const vector_t* from,const vector_t* to,piece_t moved_piece,piece_t captured_piece,uint8_t flag);
+void init_move(movement_t* move,const vector_t* from,const vector_t* to,piece_t moved_piece,piece_t captured_piece,piece_t promotion,uint8_t flag);
 #endif
